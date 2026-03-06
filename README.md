@@ -1,4 +1,4 @@
-# 🚗 Road Accident Severity Prediction & Risk Analysis (A to Z)
+# 🚗 Road Accident Severity Prediction & Risk Analysis 
 
 ![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-orange)
 ![Python](https://img.shields.io/badge/Python-3.8+-blue?logo=python&logoColor=white)
@@ -111,9 +111,9 @@ This threshold is **double the historical baseline**, allowing traffic authoriti
 **Hayam Wahdan**
 *BI & Data Analyst*
 
-[![GitHub][(https://img.shields.io/badge/GitHub-Profile-black?logo=github)](https://github.com/)](https://github.com/hayamwahdan)
-[![LinkedIn][(https://img.shields.io/badge/LinkedIn-Profile-blue?logo=linkedin)](https://linkedin.com/)](https://www.linkedin.com/in/hayamwahdan/)
-[![Hugging Face][([https://img.shields.io/badge/%F0%9F%A4%97-Repository-orange](https://huggingface.co/hayamwahdan/road-accident-severity-prediction/blob/main/README.md))]](https://huggingface.co/hayamwahdan/road-accident-severity-prediction)
+[![GitHub](https://github.com/hayamwahdan)
+[![LinkedIn](https://www.linkedin.com/in/hayamwahdan/)
+[![Hugging Face]](https://huggingface.co/hayamwahdan/road-accident-severity-prediction)
 
 ### Prerequisites
 ```bash
