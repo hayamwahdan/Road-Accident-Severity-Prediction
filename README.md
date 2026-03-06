@@ -1,50 +1,119 @@
-# Road Accident Severity Prediction
+# 🚗 Road Accident Severity Prediction & Risk Analysis (A to Z)
 
-**Predicting accident severity (Fatal / Serious / Slight) using UK road accident data (2021-2022)**
-
-![UK Road Accident](https://img.shields.io/badge/Data-UK%20Road%20Safety-blue)
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-orange)
+![Python](https://img.shields.io/badge/Python-3.8+-blue?logo=python&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-orange?logo=scikit-learn&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-## ## Project Overview
+---
 
-This repository contains an end-to-end data analysis and machine learning project that:
+## 📌 Project Overview
 
-- Explores **UK road accident data** (~300,000+ records)
-- Performs extensive **EDA** and feature engineering
-- Builds a **Random Forest classifier** to predict accident severity
-- Uses **SMOTE** to handle severe class imbalance (Fatal ~1%, Serious ~13%)
-- Includes **scenario simulation** and a simple **risk alerting logic**
-- Exports a trained model ready for deployment
+This project focuses on identifying the **environmental and infrastructural drivers** behind road accident severity. Using a dataset of over **307,000 historical incidents**, I developed a machine learning pipeline to classify accidents as **Slight**, **Serious**, or **Fatal**.
 
-Main notebook: **`Road_Accident_Analysis.ipynb`**
+The unique value of this project lies in its **Risk-Scoring System**, which identifies high-risk "profiles" even in scenarios where a slight accident is statistically more probable.
 
-## ## Repository Contents
+---
 
-| File | Description |
-| :--- | :--- |
-| `Road_Accident_Analysis.ipynb` | Complete analysis, preprocessing, modeling & evaluation |
-| `Road_Accident_Data_Cleaned.csv.gz` | The processed dataset ready for visualization tools |
-| `road_accident_model.pkl` | Saved Random Forest model (SMOTE-balanced) |
-| `severity_encoder.pkl` | LabelEncoder for mapping (0: Fatal, 1: Serious, 2: Slight) |
-| `model_features.pkl` | List of feature columns required for model inference |
+## 📊 Data Audit & Attributes
 
-## ## Key Insights & Results
+The dataset was initially provided as a **42MB Excel file** containing detailed logs of traffic incidents.
 
-### 1. Performance
-*   **Accuracy:** Achieved **~80%** overall accuracy.
-*   **Class Balancing:** By applying SMOTE, the model significantly improved its ability to detect "Serious" and "Fatal" incidents compared to a baseline model.
+| Property | Value |
+|---|---|
+| Initial Records | 307,973 |
+| Final Features | 62 (after One-Hot Encoding) |
 
-### 2. Top Predictors
-The model identified the following as the most influential factors in determining accident severity:
-1.  **Spatial Coordinates (Lat/Long):** Specific high-risk geographic locations.
-2.  **Speed Limit:** Higher speed zones (60-70mph) are the strongest indicators of fatal outcomes.
-3.  **Hour of Day:** Peak accident times occur during afternoon commute hours (3 PM - 5 PM).
+**Core Attributes:**
 
-### 3. Environmental Paradox
-Analysis revealed that the vast majority of accidents occur in **"Fine" weather** and **"Daylight"**. This suggests that driver complacency in good conditions is a higher risk factor than adverse weather.
+- **Temporal:** Accident Date, Day of Week, Month, Hour
+- **Environmental:** Weather Conditions, Light Conditions, Road Surface Conditions
+- **Infrastructure:** Speed Limit, Road Type, Junction Control, Urban or Rural Area
+- **Geospatial:** Latitude and Longitude
 
-## ## Installation & Usage
+---
+
+## 🛠️ Methodology (The A to Z Workflow)
+
+### A. Data Preprocessing
+
+- **Naming Standardization:** Reconciled inconsistent column naming (spaces vs. underscores)
+- **Missing Value Strategy:**
+  - Imputed Weather and Road Conditions using the **Mode**
+  - Imputed Geospatial coordinates using the **Median**
+  - Dropped `Carriageway_Hazards` due to extreme missingness (>98%)
+- **Leakage Prevention:** Removed variables determined *after* the accident (e.g., Number of Casualties) to ensure a true predictive environment
+
+### B. Feature Engineering
+
+- **Temporal Extraction:** Extracted the Hour from timestamp strings using robust splitting to handle varied formats (`HH:MM` vs `HH:MM:SS`)
+- **Categorical Transformation:** Implemented One-Hot Encoding for nominal data, expanding the feature space to capture non-linear relationships
+
+### C. Exploratory Data Analysis (EDA)
+
+> **Key Findings:**
+
+- 🌤️ **The Weather Paradox:** 80% of accidents occur in *"Fine"* weather, suggesting driver complacency increases when conditions appear safe
+- ⏰ **Diurnal Peak:** High-risk window identified between **15:00 – 17:00** (Evening Rush Hour)
+- 🚀 **Speed Correlation:** While 30mph zones have the most accidents, **60–70mph zones show a significantly higher proportion of Fatal outcomes**
+
+### D. Model Building — Random Forest
+
+- **Algorithm Choice:** Random Forest was selected for its native multi-class support and ability to model complex feature interactions
+- **Handling Imbalance (SMOTE):** Fatal incidents represent only **1.2%** of the data. SMOTE (Synthetic Minority Over-sampling) was used to balance the training set to **630,000+ samples**
+
+---
+
+## 📈 Performance & Validation
+
+| Metric | Score |
+|---|---|
+| Baseline Accuracy | 85.4% *(biased toward majority "Slight" class)* |
+| SMOTE-Balanced Accuracy | 80.03% *(improved Fatal & Serious detection)* |
+| Cross-Validation (5-Fold) | Mean accuracy of **85.4%** across all folds |
+
+> The SMOTE model sacrifices overall accuracy to significantly improve detection of high-severity incidents — a deliberate and critical tradeoff for real-world safety applications.
+
+---
+
+## ⚠️ Intelligent Warning System
+
+Rather than outputting a binary label, the final system uses **Probability Thresholding**:
+
+```
+IF P(Fatal) > 2% → Trigger HIGH-RISK ALERT 🚨
+```
+
+This threshold is **double the historical baseline**, allowing traffic authorities to take preventive action — such as patrol deployment or speed reduction — based on risk *intensity* rather than just predicted class.
+
+---
+
+## 📦 Model & Data Storage
+
+| Asset | Detail |
+|---|---|
+| Model Size | 1.97 GB (hosted on Hugging Face) |
+| Dataset | Compressed to `.csv.gz` — 6MB |
+
+> The model is hosted on [Hugging Face 🤗](https://huggingface.co/) due to GitHub's file size limits.
+
+---
+
+## ⚠️ Limitations & Bias
+
+- **Human Factor:** The model does not account for driver behavioral data (distraction, alcohol, or fatigue) or demographics (age/experience)
+- **Geography:** The model is optimized for specific regional infrastructure and may require **retraining** for different territories
+
+---
+
+## 👤 Author
+
+**Hayam Wahdan**
+*BI & Data Analyst*
+
+[![GitHub][(https://img.shields.io/badge/GitHub-Profile-black?logo=github)](https://github.com/)](https://github.com/hayamwahdan)
+[![LinkedIn][(https://img.shields.io/badge/LinkedIn-Profile-blue?logo=linkedin)](https://linkedin.com/)](https://www.linkedin.com/in/hayamwahdan/)
+[![Hugging Face][([https://img.shields.io/badge/%F0%9F%A4%97-Repository-orange](https://huggingface.co/hayamwahdan/road-accident-severity-prediction/blob/main/README.md))]](https://huggingface.co/hayamwahdan/road-accident-severity-prediction)
 
 ### Prerequisites
 ```bash
